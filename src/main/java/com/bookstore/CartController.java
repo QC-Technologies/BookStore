@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -85,26 +86,14 @@ public class CartController {
         return str = str+"]";
     }
 
-    /**
-     *Searches books against book title
-     * @param title: Book title
-     * @return String
-     */
-    @RequestMapping(value = "search", method = RequestMethod.GET)
-    public String search(@RequestParam(name = "title") String title){
-        List<Book> list = repository.findAllByTitle('%'+title.toLowerCase()+'%');
-        return convertToString(list);
-
-    }
-
     @RequestMapping(value = "checkout", method = RequestMethod.POST, consumes = "application/json")
-    public boolean checkout(@RequestBody List<Book> list){
+    public ResponseEntity<Boolean> checkout(@RequestBody List<Book> list){
         for (Book book: list) {
             Book tempBook = repository.findByTitle(book.getTitle());
             tempBook.setSold(book.getQuantity()+tempBook.getSold());
             repository.save(tempBook);
         }
-        return true;
+        return new ResponseEntity<Boolean>(true,HttpStatus.OK);
     }
 
 }

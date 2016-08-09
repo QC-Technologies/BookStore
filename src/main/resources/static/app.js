@@ -13,6 +13,7 @@ var BookStore = React.createClass({
     componentWillMount: function(){
         React.render(<SearchForm/>, document.getElementById('searchForm'));
         React.render(<CategoryBox/>, document.getElementById('categories_show'));
+        React.render(<TopSellerBox/>, document.getElementById('TopSellerShow'));
     },
     getInitialState: function(){
         return{data:[]}
@@ -94,7 +95,6 @@ var Book = React.createClass({
     },
     render: function(){
         if(this.props.quantity>0){
-            debugger;
             return(
             <div className="templatemo_product_box">
                 <h1>{this.props.title}  <span>(by {this.props.author})</span></h1>
@@ -258,9 +258,10 @@ var Cart = React.createClass({
           contentType: 'application/json',
           data: JSON.stringify(cookie.get('cart')),
           success: function(data){
-              debugger;
               cookie.set('cart',[]);
-              React.render(<Cart data={cookie.get('cart')}/>,document.getElementById('sticker'));
+              React.render(<Cart data={cookie.get('cart')}/>,document.getElementById('sticker')
+          );
+              React.render(<TopSellerBox/>, document.getElementById('TopSellerShow'));
           }
       });
     },
@@ -280,6 +281,23 @@ React.render(<Cart data={cookie.get('cart')}/>, document.getElementById('sticker
 }
 
 
+var TopSellerBox = React.createClass({
+    getInitialState: function(){
+        return{data:[]}
+    },
+    render: function(){
+        return(
+            <ul>
+                <TopSellerList data={this.state.data}/>
+            </ul>
+        );
+    },
+    componentDidMount: function(){
+       client({method:'GET', path:'get_top_sellers'}).done(response => {
+            this.setState({data: response.entity});
+        });
+    }
+});
 
 
 var CategoryBox = React.createClass({
@@ -301,6 +319,20 @@ var CategoryBox = React.createClass({
 });
 
 
+var TopSellerList = React.createClass({
+    render: function(){
+        var CatNode = this.props.data.map(function(top){
+            return(
+                    <Category name={top.title} />
+                                          );
+                                           });
+        return(
+            <ul>
+                {CatNode}
+            </ul>
+            );
+    }
+});
 
 var CategoryList = React.createClass({
     render: function(){

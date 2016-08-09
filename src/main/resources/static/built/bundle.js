@@ -62,6 +62,7 @@
 	    componentWillMount: function componentWillMount() {
 	        React.render(React.createElement(SearchForm, null), document.getElementById('searchForm'));
 	        React.render(React.createElement(CategoryBox, null), document.getElementById('categories_show'));
+	        React.render(React.createElement(TopSellerBox, null), document.getElementById('TopSellerShow'));
 	    },
 	    getInitialState: function getInitialState() {
 	        return { data: [] };
@@ -148,7 +149,6 @@
 	    },
 	    render: function render() {
 	        if (this.props.quantity > 0) {
-	            debugger;
 	            return React.createElement(
 	                'div',
 	                { className: 'templatemo_product_box' },
@@ -393,9 +393,9 @@
 	            contentType: 'application/json',
 	            data: JSON.stringify(cookie.get('cart')),
 	            success: function success(data) {
-	                debugger;
 	                cookie.set('cart', []);
 	                React.render(React.createElement(Cart, { data: cookie.get('cart') }), document.getElementById('sticker'));
+	                React.render(React.createElement(TopSellerBox, null), document.getElementById('TopSellerShow'));
 	            }
 	        });
 	    },
@@ -429,6 +429,28 @@
 	    React.render(React.createElement(Cart, { data: cookie.get('cart') }), document.getElementById('sticker'));
 	}
 	
+	var TopSellerBox = React.createClass({
+	    displayName: 'TopSellerBox',
+	
+	    getInitialState: function getInitialState() {
+	        return { data: [] };
+	    },
+	    render: function render() {
+	        return React.createElement(
+	            'ul',
+	            null,
+	            React.createElement(TopSellerList, { data: this.state.data })
+	        );
+	    },
+	    componentDidMount: function componentDidMount() {
+	        var _this2 = this;
+	
+	        client({ method: 'GET', path: 'get_top_sellers' }).done(function (response) {
+	            _this2.setState({ data: response.entity });
+	        });
+	    }
+	});
+	
 	var CategoryBox = React.createClass({
 	    displayName: 'CategoryBox',
 	
@@ -443,11 +465,26 @@
 	        );
 	    },
 	    componentDidMount: function componentDidMount() {
-	        var _this2 = this;
+	        var _this3 = this;
 	
 	        client({ method: 'GET', path: 'api/bookCategories' }).done(function (response) {
-	            _this2.setState({ data: response.entity._embedded.bookCategories });
+	            _this3.setState({ data: response.entity._embedded.bookCategories });
 	        });
+	    }
+	});
+	
+	var TopSellerList = React.createClass({
+	    displayName: 'TopSellerList',
+	
+	    render: function render() {
+	        var CatNode = this.props.data.map(function (top) {
+	            return React.createElement(Category, { name: top.title });
+	        });
+	        return React.createElement(
+	            'ul',
+	            null,
+	            CatNode
+	        );
 	    }
 	});
 	
