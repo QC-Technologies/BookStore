@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Created by irtza on 8/5/16.
+ *
  */
 @Component
 public class DatabaseLoader implements CommandLineRunner {
@@ -25,9 +26,23 @@ public class DatabaseLoader implements CommandLineRunner {
         BookCategory mystery = new BookCategory("Mystery");
         this.bookCategoryRepository.save(fiction);
         this.bookCategoryRepository.save(mystery);
-        this.repository.save(new Book("Harry Potter", "JK",10.00,"The novel is about magic","images/book.jpg", 10
+        this.repository.save(new Book("The Ice Berg", "Anonymous",5.00,
+                "The novel is about magic","images/book.jpg", 100
                 ,fiction));
-        this.repository.save(new Book("Be o Wolf", "KK Modi",10.00,"The novel is about a wear wolf","images/book3.gif",
+        this.repository.save(new Book("Mr Mercedes", "Stephen King",12.00,
+                "The novel is about a wear wolf","images/book3.gif",
                 10, mystery));
+        this.repository.save(new Book("George Orwell", "Anonymous",10.00,
+                "The novel is about a wear wolf","images/book2.jpeg",
+                10, mystery));
+        this.repository.save(new Book("The Maker of Swans", "Paraic O'Donnell",10.00,
+                "The novel is about a wear wolf","images/swan.jpg",
+                10, mystery));
+        this.repository.save(new Book("Pieces of Life", "Charles Fernyhough", 30.00,
+                "The novel is about a wear wolf","images/original.jpg",
+                10, mystery));
+        this.repository.save(new Book("The Road", "Cormac McCarthy", 20.00,
+                "The novel is about a wear wolf","images/the-road.jpg",
+                12, mystery));
     }
 }

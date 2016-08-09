@@ -188,6 +188,8 @@ img {
 	padding: 10px;
 	background-color: #171716;
 	border: 1px solid #212120;
+	margin-top: 3.9%;
+
 }
 
 #templatemo_content #templatemo_content_right {
@@ -335,6 +337,7 @@ button{
     padding-bottom: 10px;
     border-bottom: 1px solid #2b2b2a;
     margin-bottom: 20px;
+    background: #171716;
 }
 
 .cart h1{

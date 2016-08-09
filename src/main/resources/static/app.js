@@ -5,6 +5,7 @@ const cookie = require('js.cookie');
 const JSON = require('JSON');
 const $ = require('jquery');
 const LOCAL_HOST_GET_ID = 'http://localhost:8080/get_id';
+const LOCAL_HOST_GET_CATEGORIES = 'http://localhost:8080/api/bookCategories'
 
 var BookStore = React.createClass({
     componentWillMount: function(){
@@ -77,6 +78,7 @@ var Book = React.createClass({
                 success: function(data){
                 },
                 error: function(err){
+                    console.log(err.message);
                 }
             });
             React.render(<Cart data={cookie.get('cart')}/>, document.getElementById('sticker')
@@ -199,7 +201,7 @@ var SearchForm = React.createClass({
             data:{'title': title},
             success: function(data){
                 React.render(<SearchResult data={JSON.parse(data)}/>,
-                document.getElementById('searchContainer'));
+                document.getElementById('react'));
             }
             });
         }
@@ -258,6 +260,55 @@ if(cookie.get('cart')){
 React.render(<Cart data={cookie.get('cart')}/>, document.getElementById('sticker')
                                                                     );
 }
+
+
+
+
+var CategoryBox = React.createClass({
+    getInitialState: function(){
+        return{data:[]}
+    },
+    render: function(){
+        return(
+            <ul>
+                <CategoryList data={this.state.data}/>
+            </ul>
+        );
+    },
+    componentDidMount: function(){
+        client({method:'GET', path:'api/bookCategories'}).done(response => {
+            this.setState({data: response.entity._embedded.bookCategories});
+        });
+    }
+});
+
+
+
+var CategoryList = React.createClass({
+    render: function(){
+        var CatNode = this.props.data.map(function(category){
+            return(
+                    <Category name={category.name} />
+                                          );
+                                           });
+        return(
+            <ul>
+                {CatNode}
+            </ul>
+            );
+    }
+});
+
+var Category = React.createClass({
+    render: function(){
+        return(
+            <li><a href="#">{this.props.name}</a></li>
+        );
+        
+    }
+});
+
+React.render(<CategoryBox/>, document.getElementById('categories_show'));
 
 React.render(<BookStore/>,
             document.getElementById('react'));

@@ -53,6 +53,7 @@
 	var JSON = __webpack_require__(206);
 	var $ = __webpack_require__(207);
 	var LOCAL_HOST_GET_ID = 'http://localhost:8080/get_id';
+	var LOCAL_HOST_GET_CATEGORIES = 'http://localhost:8080/api/bookCategories';
 	
 	var BookStore = React.createClass({
 	    displayName: 'BookStore',
@@ -133,7 +134,9 @@
 	                    contentType: 'application/json',
 	                    data: JSON.stringify(e),
 	                    success: function success(data) {},
-	                    error: function error(err) {}
+	                    error: function error(err) {
+	                        console.log(err.message);
+	                    }
 	                });
 	                React.render(React.createElement(Cart, { data: cookie.get('cart') }), document.getElementById('sticker'));
 	                React.render(React.createElement(BookStore, null), document.getElementById('react'));
@@ -325,7 +328,7 @@
 	                url: 'http://localhost:8080/search',
 	                data: { 'title': title },
 	                success: function success(data) {
-	                    React.render(React.createElement(SearchResult, { data: JSON.parse(data) }), document.getElementById('searchContainer'));
+	                    React.render(React.createElement(SearchResult, { data: JSON.parse(data) }), document.getElementById('react'));
 	                }
 	            });
 	        }
@@ -408,6 +411,61 @@
 	if (cookie.get('cart')) {
 	    React.render(React.createElement(Cart, { data: cookie.get('cart') }), document.getElementById('sticker'));
 	}
+	
+	var CategoryBox = React.createClass({
+	    displayName: 'CategoryBox',
+	
+	    getInitialState: function getInitialState() {
+	        return { data: [] };
+	    },
+	    render: function render() {
+	        return React.createElement(
+	            'ul',
+	            null,
+	            React.createElement(CategoryList, { data: this.state.data })
+	        );
+	    },
+	    componentDidMount: function componentDidMount() {
+	        var _this2 = this;
+	
+	        client({ method: 'GET', path: 'api/bookCategories' }).done(function (response) {
+	            _this2.setState({ data: response.entity._embedded.bookCategories });
+	        });
+	    }
+	});
+	
+	var CategoryList = React.createClass({
+	    displayName: 'CategoryList',
+	
+	    render: function render() {
+	        var CatNode = this.props.data.map(function (category) {
+	            return React.createElement(Category, { name: category.name });
+	        });
+	        return React.createElement(
+	            'ul',
+	            null,
+	            CatNode
+	        );
+	    }
+	});
+	
+	var Category = React.createClass({
+	    displayName: 'Category',
+	
+	    render: function render() {
+	        return React.createElement(
+	            'li',
+	            null,
+	            React.createElement(
+	                'a',
+	                { href: '#' },
+	                this.props.name
+	            )
+	        );
+	    }
+	});
+	
+	React.render(React.createElement(CategoryBox, null), document.getElementById('categories_show'));
 	
 	React.render(React.createElement(BookStore, null), document.getElementById('react'));
 	//Sticky cart
