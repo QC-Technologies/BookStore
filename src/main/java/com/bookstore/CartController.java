@@ -97,4 +97,14 @@ public class CartController {
 
     }
 
+    @RequestMapping(value = "checkout", method = RequestMethod.POST, consumes = "application/json")
+    public boolean checkout(@RequestBody List<Book> list){
+        for (Book book: list) {
+            Book tempBook = repository.findByTitle(book.getTitle());
+            tempBook.setSold(book.getQuantity()+tempBook.getSold());
+            repository.save(tempBook);
+        }
+        return true;
+    }
+
 }

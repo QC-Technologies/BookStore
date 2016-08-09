@@ -6,10 +6,13 @@ const JSON = require('JSON');
 const $ = require('jquery');
 const LOCAL_HOST_GET_ID = 'http://localhost:8080/get_id';
 const LOCAL_HOST_GET_CATEGORIES = 'http://localhost:8080/api/bookCategories'
+const LOCAL_HOST_CHECKOUT = 'http://localhost:8080/checkout'
+
 
 var BookStore = React.createClass({
     componentWillMount: function(){
         React.render(<SearchForm/>, document.getElementById('searchForm'));
+        React.render(<CategoryBox/>, document.getElementById('categories_show'));
     },
     getInitialState: function(){
         return{data:[]}
@@ -83,14 +86,15 @@ var Book = React.createClass({
             });
             React.render(<Cart data={cookie.get('cart')}/>, document.getElementById('sticker')
                                                                     );
-            React.render(<BookStore/>,
-            document.getElementById('react'));
+            //React.render(<BookStore/>,
+            //document.getElementById('react'));
             }
 
         });
     },
     render: function(){
         if(this.props.quantity>0){
+            debugger;
             return(
             <div className="templatemo_product_box">
                 <h1>{this.props.title}  <span>(by {this.props.author})</span></h1>
@@ -112,7 +116,7 @@ var Book = React.createClass({
                 <div className="product_info">
                     <p>{this.props.description}</p>
                     <h3>${this.props.price}</h3>
-                    <div className="buy_now_button"><button id={this.props.id}>Buy Now</button></div>
+                    <div className="buy_now_button"><button id={this.props.id} onClick={this.addToCart}>Buy Now</button></div>
                 </div>
                 <div className="cleaner">&nbsp;</div>
             </div>
@@ -230,11 +234,12 @@ var SearchResult = React.createClass({
     }
 });
 
+
 var SearchList = React.createClass({
     render: function(){
         var BookNode = this.props.data.map(function(book){
             return(
-                    <Book title={book.title} quantity={book.quantity} id={book.id} author={book.author} description={book.decription} price={book.price} image={book.image} />
+                    <Book title={book.title} quantity={book.quantity} id={book.id} author={book.author} description={book.decription} price={book.price} image={book.image} refresh={false} />
                                           );
                                            });
         return(
@@ -246,12 +251,25 @@ var SearchList = React.createClass({
 });
         
 var Cart = React.createClass({
+    checkOut: function(){
+      $.ajax({
+          url: LOCAL_HOST_CHECKOUT,
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(cookie.get('cart')),
+          success: function(data){
+              debugger;
+              cookie.set('cart',[]);
+              React.render(<Cart data={cookie.get('cart')}/>,document.getElementById('sticker'));
+          }
+      });
+    },
     render: function(){
        return( 
            <div>
            <div><h1>Cart</h1></div>
            <CartList data={cookie.get('cart')} />
-            <div><button className="checkout">checkout</button></div>
+            <div><button className="checkout" onClick={this.checkOut}>checkout</button></div>
             </div>
             );
     }
@@ -308,10 +326,8 @@ var Category = React.createClass({
     }
 });
 
-React.render(<CategoryBox/>, document.getElementById('categories_show'));
-
 React.render(<BookStore/>,
-            document.getElementById('react'));
+           document.getElementById('react'));
 //Sticky cart
     $(document).ready(function() {
     var s = $("#sticker");

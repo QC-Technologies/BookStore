@@ -21,6 +21,7 @@ public class Book {
     private String description;
     private String image;
     private int quantity;
+    private int sold;
 
     public int getQuantity() {
         return quantity;
@@ -44,6 +45,14 @@ public class Book {
 
     private Book(){}
 
+    public int getSold() {
+        return sold;
+    }
+
+    public void setSold(int sold) {
+        this.sold = sold;
+    }
+
     /**
      * @param title: Book Title
      * @param author: Book Author
@@ -61,6 +70,8 @@ public class Book {
         this.image = image;
         this.quantity = quantity;
         this.bookCategory = bookCategory;
+        this.sold = 0;
+
     }
 
     public String getAuthor() {

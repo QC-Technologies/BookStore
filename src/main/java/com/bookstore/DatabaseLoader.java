@@ -35,7 +35,7 @@ public class DatabaseLoader implements CommandLineRunner {
         this.repository.save(new Book("George Orwell", "Anonymous",10.00,
                 "The novel is about a wear wolf","images/book2.jpeg",
                 10, mystery));
-        this.repository.save(new Book("The Maker of Swans", "Paraic O'Donnell",10.00,
+        this.repository.save(new Book("The Maker of Swans", "P O'Donnell",10.00,
                 "The novel is about a wear wolf","images/swan.jpg",
                 10, mystery));
         this.repository.save(new Book("Pieces of Life", "Charles Fernyhough", 30.00,

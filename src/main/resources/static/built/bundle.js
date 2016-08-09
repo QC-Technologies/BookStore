@@ -54,12 +54,14 @@
 	var $ = __webpack_require__(207);
 	var LOCAL_HOST_GET_ID = 'http://localhost:8080/get_id';
 	var LOCAL_HOST_GET_CATEGORIES = 'http://localhost:8080/api/bookCategories';
+	var LOCAL_HOST_CHECKOUT = 'http://localhost:8080/checkout';
 	
 	var BookStore = React.createClass({
 	    displayName: 'BookStore',
 	
 	    componentWillMount: function componentWillMount() {
 	        React.render(React.createElement(SearchForm, null), document.getElementById('searchForm'));
+	        React.render(React.createElement(CategoryBox, null), document.getElementById('categories_show'));
 	    },
 	    getInitialState: function getInitialState() {
 	        return { data: [] };
@@ -139,12 +141,14 @@
 	                    }
 	                });
 	                React.render(React.createElement(Cart, { data: cookie.get('cart') }), document.getElementById('sticker'));
-	                React.render(React.createElement(BookStore, null), document.getElementById('react'));
+	                //React.render(<BookStore/>,
+	                //document.getElementById('react'));
 	            }
 	        });
 	    },
 	    render: function render() {
 	        if (this.props.quantity > 0) {
+	            debugger;
 	            return React.createElement(
 	                'div',
 	                { className: 'templatemo_product_box' },
@@ -229,7 +233,7 @@
 	                        { className: 'buy_now_button' },
 	                        React.createElement(
 	                            'button',
-	                            { id: this.props.id },
+	                            { id: this.props.id, onClick: this.addToCart },
 	                            'Buy Now'
 	                        )
 	                    )
@@ -369,7 +373,7 @@
 	
 	    render: function render() {
 	        var BookNode = this.props.data.map(function (book) {
-	            return React.createElement(Book, { title: book.title, quantity: book.quantity, id: book.id, author: book.author, description: book.decription, price: book.price, image: book.image });
+	            return React.createElement(Book, { title: book.title, quantity: book.quantity, id: book.id, author: book.author, description: book.decription, price: book.price, image: book.image, refresh: false });
 	        });
 	        return React.createElement(
 	            'ul',
@@ -382,6 +386,19 @@
 	var Cart = React.createClass({
 	    displayName: 'Cart',
 	
+	    checkOut: function checkOut() {
+	        $.ajax({
+	            url: LOCAL_HOST_CHECKOUT,
+	            type: 'POST',
+	            contentType: 'application/json',
+	            data: JSON.stringify(cookie.get('cart')),
+	            success: function success(data) {
+	                debugger;
+	                cookie.set('cart', []);
+	                React.render(React.createElement(Cart, { data: cookie.get('cart') }), document.getElementById('sticker'));
+	            }
+	        });
+	    },
 	    render: function render() {
 	        return React.createElement(
 	            'div',
@@ -401,7 +418,7 @@
 	                null,
 	                React.createElement(
 	                    'button',
-	                    { className: 'checkout' },
+	                    { className: 'checkout', onClick: this.checkOut },
 	                    'checkout'
 	                )
 	            )
@@ -464,8 +481,6 @@
 	        );
 	    }
 	});
-	
-	React.render(React.createElement(CategoryBox, null), document.getElementById('categories_show'));
 	
 	React.render(React.createElement(BookStore, null), document.getElementById('react'));
 	//Sticky cart
