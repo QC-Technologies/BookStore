@@ -1,0 +1,7 @@
+.idea/
+build/
+gradle/
+gradle.bat
+src/main/resources/static/images/
+src/main/resources/static/node_modules/
+src/test/
