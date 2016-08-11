@@ -1,9 +1,36 @@
-'use strict;'
+var jsdom = require('jsdom')
+
+// setup the simplest document possible
+var doc = jsdom.jsdom('<!doctype html><html><body></body></html>')
+
+// get the window object out of the document
+var win = doc.defaultView
+
+// set globals for mocha that make access to document and window feel 
+// natural in the test environment
+global.document = doc;
+global.window = win;
+navigator = window.navigator = {};
+
+
 const React = require('react');
-const client = require('./client');
-const cookie = require('js.cookie');
+
+var cookie = {
+    value_: '', 
+
+    get() {
+        return this.value_;
+    },
+
+    set(value) {
+        this.value_ += value + ';';
+    }
+};
+ 
+
+//const cookie = require('js.cookie');
 const JSON = require('JSON');
-const $ = require('jquery');
+const $ = require('jquery')(window);
 const LOCAL_HOST_GET_ID = 'http://localhost:8080/get_id';
 const LOCAL_HOST_GET_CATEGORIES = 'http://localhost:8080/api/bookCategories'
 const LOCAL_HOST_CHECKOUT = 'http://localhost:8080/checkout'
@@ -27,7 +54,7 @@ var BookStore = React.createClass({
         );
     },
     componentDidMount: function(){
-        client({method:'GET', path:'api/books'}).done(response => {
+        $.get({ path:'api/books'}).done(response => {
             this.setState({data: response.entity._embedded.books});
         });
     }
@@ -36,8 +63,7 @@ var BookStore = React.createClass({
 var BookList = React.createClass({
     render: function(){
         var BookNode = this.props.data.map(function(book){
-            var lastIndex = book._links.self.href.lastIndexOf('/');
-            var id = book._links.self.href.substring(lastIndex+1);
+            var id =1;
             return(
                     <Book title={book.title} quantity={book.quantity} id={id} author={book.author} description={book.decription} price={book.price} image={book.image} />
                                           );
@@ -52,7 +78,7 @@ var BookList = React.createClass({
 
 var Book = React.createClass({
     addToCart: function(){
-        client({method:'GET', path:'api/books/'+this.props.id}).done(response => {
+        $.get({ path:'api/books/'+this.props.id}).done(response => {
             var cart = cookie.get('cart');
             if (!cart){
                 cart = [];
@@ -76,7 +102,7 @@ var Book = React.createClass({
             e = response.entity;
             $.ajax({
                 url: 'http://localhost:8080/add_to_cart',
-                type: 'PATCH',
+                type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(e),
                 success: function(data){
@@ -131,7 +157,7 @@ var CartEntity = React.createClass({
     updateDatabase: function(book){
         $.ajax({
                 url: 'http://localhost:8080/remove_from_cart',
-                type: 'PATCH',
+                type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(book),
                 success: function(data){
@@ -254,7 +280,7 @@ var Cart = React.createClass({
     checkOut: function(){
       $.ajax({
           url: LOCAL_HOST_CHECKOUT,
-          type: 'PATCH',
+          type: 'POST',
           contentType: 'application/json',
           data: JSON.stringify(cookie.get('cart')),
           success: function(data){
@@ -293,7 +319,7 @@ var TopSellerBox = React.createClass({
         );
     },
     componentDidMount: function(){
-       client({method:'GET', path:'get_top_sellers'}).done(response => {
+       $.get({path:'get_top_sellers'}).done(response => {
             this.setState({data: response.entity});
         });
     }
@@ -312,7 +338,7 @@ var CategoryBox = React.createClass({
         );
     },
     componentDidMount: function(){
-        client({method:'GET', path:'api/bookCategories'}).done(response => {
+        $.get({path:'api/bookCategories'}).done(response => {
             this.setState({data: response.entity._embedded.bookCategories});
         });
     }
@@ -375,3 +401,6 @@ React.render(<BookStore/>,
     });
 });
 
+module.exports={
+    Category
+}

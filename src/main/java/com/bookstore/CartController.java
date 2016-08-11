@@ -1,10 +1,7 @@
 package com.bookstore;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -25,15 +22,15 @@ public class CartController {
      * @param book: Book Object
      * @return ResponseEntity
      */
-    @RequestMapping(value = "add_to_cart", method = RequestMethod.POST, consumes = "application/json")
-    public ResponseEntity<Book> update(@RequestBody Book book) {
+    @RequestMapping(value = "add_to_cart", method = RequestMethod.PATCH, consumes = "application/json")
+    public Boolean update(@RequestBody Book book) {
         Book bookToUpdate = repository.findByTitle(book.getTitle());
         if(bookToUpdate.getQuantity() > 0){
             bookToUpdate.setQuantity(bookToUpdate.getQuantity()-1);
             repository.save(bookToUpdate);
-            return new ResponseEntity<Book>(bookToUpdate, HttpStatus.OK);
+            return true;
         }
-        return null;
+        return false;
     }
 
     /**
@@ -41,8 +38,8 @@ public class CartController {
      * @param book: Book object
      * @return true|false
      */
-    @RequestMapping(value = "remove_from_cart", method = RequestMethod.POST, consumes = "application/json")
-    public boolean removeFromCart(@RequestBody Book book) {
+    @RequestMapping(value = "remove_from_cart", method = RequestMethod.PATCH, consumes = "application/json")
+    public Boolean removeFromCart(@RequestBody Book book) {
         Book bookToUpdate = repository.findByTitle(book.getTitle());
         if(bookToUpdate != null){
             bookToUpdate.setQuantity(bookToUpdate.getQuantity()+book.getQuantity());
@@ -86,14 +83,14 @@ public class CartController {
         return str = str+"]";
     }
 
-    @RequestMapping(value = "checkout", method = RequestMethod.POST, consumes = "application/json")
-    public ResponseEntity<Boolean> checkout(@RequestBody List<Book> list){
+    @RequestMapping(value = "checkout", method = RequestMethod.PATCH, consumes = "application/json")
+    public Boolean checkout(@RequestBody List<Book> list){
         for (Book book: list) {
             Book tempBook = repository.findByTitle(book.getTitle());
             tempBook.setSold(book.getQuantity()+tempBook.getSold());
             repository.save(tempBook);
         }
-        return new ResponseEntity<Boolean>(true,HttpStatus.OK);
+        return true;
     }
 
 }

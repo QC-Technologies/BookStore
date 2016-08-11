@@ -26,13 +26,13 @@ public class DatabaseLoader implements CommandLineRunner {
         BookCategory mystery = new BookCategory("Mystery");
         this.bookCategoryRepository.save(fiction);
         this.bookCategoryRepository.save(mystery);
-        this.repository.save(new Book("The Ice Berg", "Anonymous",5.00,
+        this.repository.save(new Book("The Ice Berg", "M Coutts",5.00,
                 "The novel is about magic","images/book.jpg", 100
                 ,fiction));
         this.repository.save(new Book("Mr Mercedes", "Stephen King",12.00,
                 "The novel is about a wear wolf","images/book3.gif",
                 10, mystery));
-        this.repository.save(new Book("George Orwell", "Anonymous",10.00,
+        this.repository.save(new Book("1984", "George Orwell",10.00,
                 "The novel is about a wear wolf","images/book2.jpeg",
                 10, mystery));
         this.repository.save(new Book("The Maker of Swans", "P O'Donnell",10.00,
