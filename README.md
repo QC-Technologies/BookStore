@@ -17,4 +17,4 @@ It provides following features:
 *Cart moves along page scroll*
 [![sticky cart.png](https://s10.postimg.org/6daxeb5hl/sticky_cart.png)](https://postimg.org/image/k6za3cy2t/)
 
->The core purpose of building this app is to explore Java Spring Boot and provide a minimal book store demo.
+>The core purpose of building this app is to explore Java Spring Boot and produce a minimal book store demo app.
