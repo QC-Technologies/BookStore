@@ -4,4 +4,4 @@ It provides simple add to cart, search, mock checkout features, displays categor
 The core purpose of building this app is to explore Java Spring Boot.
 
 #Home Screen
-![Alt text](http://extraimago.com/images/2016/08/11/book_store_home.png "Optional title")
+[![book.png](https://s9.postimg.org/p7ninnrof/book.png)](https://postimg.org/image/exl3of1sr/)
