@@ -54,6 +54,11 @@ public class CustomRestController {
 
     }
 
+    /**
+     * Returns top 10 sold books
+     * @return string
+     */
+
     @RequestMapping(value = "get_top_sellers", method = RequestMethod.GET)
     public String getTopSellers(){
         Pageable topTen = new PageRequest(0,9);

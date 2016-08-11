@@ -6,7 +6,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * Created by irtza on 8/8/16.
+ *This is a cart controller which handles following requests
+ *  - Add_to_cart
+ *  - Remove from cart
+ *  - Checkout
+ * Created by kamal on 8/8/16.
  */
 @RestController
 public class CartController {
@@ -83,6 +87,11 @@ public class CartController {
         return str = str+"]";
     }
 
+    /**
+     * Updates book's sold counter which is then used to sort top sold books
+     * @param list: List<Book>
+     * @return true|false
+     */
     @RequestMapping(value = "checkout", method = RequestMethod.PATCH, consumes = "application/json")
     public Boolean checkout(@RequestBody List<Book> list){
         for (Book book: list) {

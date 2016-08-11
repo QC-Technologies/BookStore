@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.JoinColumn;
 
 /**
+ * This is a Book class which has required book attributes and their getter setters
  * Created by kamal on 8/5/16.
  */
 @Data
